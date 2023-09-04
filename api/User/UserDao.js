@@ -11,4 +11,8 @@ export default class userDao {
     getAllUsers = ()=>{
         return this.model.find({})
     }
+
+    getUserById = (userId)=>{
+        return this.model.find({_id:userId},{},{new:true})
+    }
 }
