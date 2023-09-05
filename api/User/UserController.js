@@ -1,7 +1,7 @@
-import userDao from "./UserDao.js";
+import UserDao from "./UserDao.js";
 
 export default class UserController {
-  userDao = new userDao();
+  userDao = new UserDao();
 
   insertUser = async (req, res) => {
     try {
@@ -28,7 +28,6 @@ export default class UserController {
   getAllUsers = async (req, res) => {
     try {
       const users = await this.userDao.getAllUsers();
-      console.log("ENV variable == :", process.env.TOKEN_KEY);
       return res.status(200).json(users);
     } catch (err) {
       return res.status(500).json({ message: "Internal server error..." });

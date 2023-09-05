@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import agentSchema from "../Agent/AgentSchema.js";
 
 const Schema = mongoose.Schema;
+
 
 let parties = new Schema({
   name: { type: String },

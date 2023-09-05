@@ -3,7 +3,6 @@ import bCrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const Schema = mongoose.Schema;
-const SECRET_KEY = "MYNAMEISSHAIKHMOHAMMADAQILRAZA";
 
 let users = new Schema({
   name: {type:String},
@@ -23,7 +22,7 @@ users.pre("save", async function (next) {
 });
 
 users.pre("save", function (next) {
-  let token = jwt.sign({ _id: this._id }, SECRET_KEY);
+  let token = jwt.sign({ _id: this._id }, process.env.TOKEN_KEY);
   this.tokens = token;
   next();
 });

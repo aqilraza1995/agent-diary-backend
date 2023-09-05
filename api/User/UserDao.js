@@ -1,7 +1,7 @@
 import userSchema from "./UserSchema.js";
 
 
-export default class userDao {
+export default class UserDao {
     model = userSchema
 
     insertUser =(userData)=>{
