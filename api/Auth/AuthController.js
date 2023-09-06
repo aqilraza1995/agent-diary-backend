@@ -17,12 +17,13 @@ export default class AuthController {
         if (user?._id) {
           const isMatch = await bCrypt.compare(password, user?.password);
           if (!isMatch) {
-            return res.status(400).json({ message: "Invalid User " });
+            return res.status(400).json({ message: "Invalid email or password." });
           } else {
-            return res.status(200).json({ message: "Login SuccessFull : " });
+            const token = user?.tokens
+            return res.status(200).json({ message: "Login SuccessFull. : ", token});
           }
         } else {
-          return res.status(400).json({ message: "Invalid User " });
+          return res.status(400).json({ message: "Invalid email or password." });
         }
       }
     } catch (err) {
