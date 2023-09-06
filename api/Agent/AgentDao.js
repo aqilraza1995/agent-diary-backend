@@ -7,7 +7,7 @@ export default class AgentDao {
     return new this.model(agentData).save();
   };
 
-  getAllAgent = () => {
+  getAllAgent = ({ page, perPage, sortObj }) => {
     return this.model.aggregate([
       {
         $lookup: {
@@ -19,7 +19,10 @@ export default class AgentDao {
       },
       { $unwind: "$partyId" },
       { $project: { partyId: { name: 1 }, name: 1, contact: 1, status: 1 } },
-    ]);
+    ])  
+    .skip((page - 1) * perPage)
+    .limit(perPage)
+    .sort(sortObj);
   };
 
   getAgentById = (agentId) => {
@@ -51,6 +54,11 @@ export default class AgentDao {
     return this.model.findOneAndDelete({ _id: agentId });
   };
 
+  getAgentList = () => {
+    return this.model.find({},{_id:1, name:1})
+  };
+
+
   getAgentByParty = (partyId) => {
     return this.model.aggregate([
       { $match: { $expr: { $eq: ["$partyId", { $toObjectId: partyId }] } } },
@@ -66,4 +74,6 @@ export default class AgentDao {
       { $project: { partyId: { name: 1 }, name: 1, contact: 1, status: 1 } },
     ]);
   };
+
+  
 }

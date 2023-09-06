@@ -7,8 +7,12 @@ export default class PartyDao {
     return new this.model(partyData).save();
   };
 
-  getAllParty = () => {
-    return this.model.find({});
+  getAllParty = ({ page, perPage, sortObj }) => {
+    return this.model
+      .find()
+      .skip((page - 1) * perPage)
+      .limit(perPage)
+      .sort(sortObj);
   };
 
   getPartyById = (partyId) => {

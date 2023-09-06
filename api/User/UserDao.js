@@ -1,18 +1,20 @@
 import userSchema from "./UserSchema.js";
 
-
 export default class UserDao {
-    model = userSchema
+  model = userSchema;
 
-    insertUser =(userData)=>{
-        return new this.model(userData).save()
-    }
+  insertUser = (userData) => {
+    return new this.model(userData).save();
+  };
 
-    getAllUsers = ()=>{
-        return this.model.find({})
-    }
+  getAllUsers = ({ page, perPage, sortObj }) => {
+    return this.model.find()
+    .skip((page - 1) * perPage)
+    .limit(perPage)
+    .sort(sortObj);
+  };
 
-    getUserById = (userId)=>{
-        return this.model.find({_id:userId},{},{new:true})
-    }
+  getUserById = (userId) => {
+    return this.model.find({ _id: userId }, {}, { new: true });
+  };
 }

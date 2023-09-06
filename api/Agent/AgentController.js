@@ -8,7 +8,7 @@ export default class AgentController {
   insertAgent = async (req, res) => {
     try {
       const { name, contact, partyId } = req.body;
-      if (!name && !contact ) {
+      if (!name && !contact) {
         return res
           .status(400)
           .json({ message: "Please fill all required fields." });
@@ -31,11 +31,19 @@ export default class AgentController {
     try {
       const page = parseInt(req.query.page) || 1;
       const perPage = parseInt(req.query.perPage) || 10;
+      const orderBy = req.query.orderBy;
+      const order = req.query.order;
+      let sortObj = {};
+      sortObj[orderBy] = order === "asc" ? 1 : -1;
 
-      const agents = await this.agentDao.getAllAgent();
+      const agents = await this.agentDao.getAllAgent({
+        page,
+        perPage,
+        sortObj,
+      });
       const response = generateJsonResponse(
         { agents, total: agents?.length, perPage, page },
-        httpStatus.OK,
+        httpStatus.OK
       );
 
       return res.status(200).json(response);
@@ -59,7 +67,7 @@ export default class AgentController {
   updateParty = async (req, res) => {
     try {
       const { name, contact, partyId } = req.body;
-      if (!name && !contact ) {
+      if (!name && !contact) {
         return res
           .status(400)
           .json({ message: "Please fill all required fields." });
@@ -89,6 +97,26 @@ export default class AgentController {
       return res.status(200).json({ message: "Agent deleted.", agent });
     } catch (err) {
       return res.status(500).json({ message: "Internal server error..." });
+    }
+  };
+
+  getAgentList = async (req, res) => {
+    try {
+      const agents = await this.agentDao.getAgentList();
+      const response = generateJsonResponse({ agents }, httpStatus.OK);
+      return res.status(200).json(response);
+    } catch (err) {
+      return res.status(500).json({ message: "Internal server error...", err });
+    }
+  };
+
+  getAgentByParty = async (req, res) => {
+    try {
+      const agents = await this.agentDao.getAgentByParty(req.params.id, req.body);
+      const response = generateJsonResponse({ agents }, httpStatus.OK);
+      return res.status(200).json(response);
+    } catch (err) {
+      return res.status(500).json({ message: "Internal server error...", err });
     }
   };
 

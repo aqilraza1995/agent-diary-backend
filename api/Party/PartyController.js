@@ -33,11 +33,19 @@ export default class PartyController {
     try {
       const page = parseInt(req.query.page) || 1;
       const perPage = parseInt(req.query.perPage) || 10;
+      const orderBy = req.query.orderBy;
+      const order = req.query.order;
+      let sortObj = {};
+      sortObj[orderBy] = order === "asc" ? 1 : -1;
 
-      const parties = await this.partyDao.getAllParty();
+      const parties = await this.partyDao.getAllParty({
+        page,
+        perPage,
+        sortObj,
+      });
       const response = generateJsonResponse(
         { parties, total: parties?.length, perPage, page },
-        httpStatus.OK,
+        httpStatus.OK
       );
 
       return res.status(200).json(response);
@@ -61,7 +69,8 @@ export default class PartyController {
   getPartyList = async (req, res) => {
     try {
       const parties = await this.partyDao.getPartyList();
-      return res.status(200).json(parties);
+      const response = generateJsonResponse({ parties }, httpStatus.OK);
+      return res.status(200).json(response);
     } catch (err) {
       return res.status(500).json({ message: "Internal server error...", err });
     }

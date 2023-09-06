@@ -1,3 +1,5 @@
+import httpStatus from "http-status";
+import generateJsonResponse from "../../helper/response.js";
 import UserDao from "./UserDao.js";
 
 export default class UserController {
@@ -27,8 +29,19 @@ export default class UserController {
 
   getAllUsers = async (req, res) => {
     try {
-      const users = await this.userDao.getAllUsers();
-      return res.status(200).json(users);
+      const page = parseInt(req.query.page) || 1;
+      const perPage = parseInt(req.query.perPage) || 10;
+      const orderBy = req.query.orderBy;
+      const order = req.query.order;
+      let sortObj = {};
+      sortObj[orderBy] = order === "asc" ? 1 : -1;
+
+      const users = await this.userDao.getAllUsers({ page, perPage, sortObj });
+      const response = generateJsonResponse(
+        { users, total: users?.length, perPage, page },
+        httpStatus.OK
+      );
+      return res.status(200).json(response);
     } catch (err) {
       return res.status(500).json({ message: "Internal server error..." });
     }
