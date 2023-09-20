@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bCrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 
 const Schema = mongoose.Schema;
 
@@ -21,11 +21,11 @@ users.pre("save", async function (next) {
   next();
 });
 
-users.pre("save", function (next) {
-  let token = jwt.sign({ _id: this._id }, process.env.TOKEN_KEY);
-  this.tokens = token;
-  next();
-});
+// users.pre("save", function (next) {
+//   let token = jwt.sign({ _id: this._id }, process.env.TOKEN_KEY);
+//   this.tokens = token;
+//   next();
+// });
 
 const userSchema = mongoose.model("users", users);
 export default userSchema;

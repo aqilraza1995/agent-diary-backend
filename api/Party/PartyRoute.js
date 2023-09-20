@@ -10,4 +10,5 @@ export default function partyRoute(router) {
   router.route("/party-list").get(auth, partyController.getPartyList);
   router.route("/update-party/:id").put(auth, partyController.updateParty);
   router.route("/delete-party/:id").delete(auth, partyController.deleteParty);
+  router.route("/update-party-status/:id").put(auth, partyController.updateStatus);
 }

@@ -13,7 +13,7 @@ export default class UserController {
           .status(400)
           .json({ message: "Please fill all required fields." });
       } else {
-        const users = await this.userDao.getAllUsers();
+        const users = await this.userDao.getUserList();
         const existUser = users.find((item) => item?.email === email);
         if (existUser) {
           return res.status(401).json({ message: "User is already exist." });
@@ -54,6 +54,15 @@ export default class UserController {
         req.body
       );
       return res.status(200).json(userDetail);
+    } catch (err) {
+      return res.status(500).json({ message: "Internal server error..." });
+    }
+  };
+
+  updateStatus = async (req, res) => {
+    try {
+      await this.userDao.updateStatus(req.params.id, req.body.status);
+      return res.status(200).json({ message: "Status updated." });
     } catch (err) {
       return res.status(500).json({ message: "Internal server error..." });
     }

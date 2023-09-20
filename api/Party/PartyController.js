@@ -10,13 +10,17 @@ export default class PartyController {
   insertParty = async (req, res) => {
     try {
       const { name, contact } = req.body;
+      console.log("name :", name);
+      console.log("contact :", contact);
       if (!name && !contact) {
         return res
           .status(400)
           .json({ message: "Please fill all required fields." });
       } else {
-        const parties = await this.partyDao.getAllParty();
+        const parties = await this.partyDao.getPartyList();
+        console.log("parties :", parties);
         const existParty = parties.find((item) => item?.contact === contact);
+        console.log("existParty :", existParty);
         if (existParty) {
           return res.status(401).json({ message: "Party is already exist." });
         } else {
@@ -84,7 +88,7 @@ export default class PartyController {
           .status(400)
           .json({ message: "Please fill all required fields." });
       } else {
-        const parties = await this.partyDao.getAllParty();
+        const parties = await this.partyDao.getPartyList();
         const existParty = parties.find((item) => item?.contact === contact);
         if (existParty) {
           return res
@@ -117,6 +121,15 @@ export default class PartyController {
         const party = await this.partyDao.deleteParty(req.params.id);
         return res.status(200).json({ message: "Party deleted." });
       }
+    } catch (err) {
+      return res.status(500).json({ message: "Internal server error..." });
+    }
+  };
+
+  updateStatus = async (req, res) => {
+    try {
+      await this.partyDao.updateStatus(req.params.id, req.body.status);
+      return res.status(200).json({ message: "Status updated." });
     } catch (err) {
       return res.status(500).json({ message: "Internal server error..." });
     }

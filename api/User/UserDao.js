@@ -8,13 +8,21 @@ export default class UserDao {
   };
 
   getAllUsers = ({ page, perPage, sortObj }) => {
-    return this.model.find()
-    .skip((page - 1) * perPage)
-    .limit(perPage)
-    .sort(sortObj);
+    return this.model
+      .find()
+      .skip((page - 1) * perPage)
+      .limit(perPage)
+      .sort(sortObj);
   };
 
+  getUserList =()=>{
+    return this.model.find({}, { _id: 1, name: 1, email:1, password:1, contact: 1 });
+  }
   getUserById = (userId) => {
     return this.model.find({ _id: userId }, {}, { new: true });
+  };
+
+  updateStatus = (userId, status) => {
+    return this.model.findOneAndUpdate({ _id: userId }, { status });
   };
 }

@@ -7,4 +7,5 @@ export default function userRoute(router){
     router.route('/sign-up').post( userController.insertUser)
     router.route('/users').get(auth, userController.getAllUsers)
     router.route('/users/:id').get(auth, userController.getUserById)
+    router.route("/update-user-status/:id").put(auth, userController.updateStatus);
 }

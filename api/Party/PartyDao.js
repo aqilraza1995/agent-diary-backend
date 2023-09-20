@@ -20,7 +20,7 @@ export default class PartyDao {
   };
 
   getPartyList = () => {
-    return this.model.find({}, { _id: 1, name: 1 });
+    return this.model.find({}, { _id: 1, name: 1, contact: 1 });
   };
 
   updateParty = (partyId, partyData) => {
@@ -33,5 +33,9 @@ export default class PartyDao {
 
   deleteParty = (partyId) => {
     return this.model.findOneAndDelete({ _id: partyId });
+  };
+
+  updateStatus = (partyId, status) => {
+    return this.model.findOneAndUpdate({ _id: partyId }, { status });
   };
 }
