@@ -9,20 +9,16 @@ export default class PartyController {
 
   insertParty = async (req, res) => {
     try {
-      const { name, contact } = req.body;
-      console.log("name :", name);
-      console.log("contact :", contact);
-      if (!name && !contact) {
+      const { name, contact, address } = req.body;
+      if (!name && !contact && !address) {
         return res
           .status(400)
-          .json({ message: "Please fill all required fields." });
+          .json({ message: "Please insert all fields are required." });
       } else {
         const parties = await this.partyDao.getPartyList();
-        console.log("parties :", parties);
         const existParty = parties.find((item) => item?.contact === contact);
-        console.log("existParty :", existParty);
         if (existParty) {
-          return res.status(401).json({ message: "Party is already exist." });
+          return res.status(400).json({ message: "Party is already exist." });
         } else {
           const party = await this.partyDao.insertParty(req.body);
           return res.status(201).json({ message: "Party inserted.", party });
@@ -39,6 +35,7 @@ export default class PartyController {
       const perPage = parseInt(req.query.perPage) || 10;
       const orderBy = req.query.orderBy;
       const order = req.query.order;
+      const search = req.query.search;
       let sortObj = {};
       sortObj[orderBy] = order === "asc" ? 1 : -1;
 
@@ -46,6 +43,7 @@ export default class PartyController {
         page,
         perPage,
         sortObj,
+        search,
       });
       const response = generateJsonResponse(
         { parties, total: parties?.length, perPage, page },
@@ -83,13 +81,16 @@ export default class PartyController {
   updateParty = async (req, res) => {
     try {
       const { name, contact } = req.body;
+      const id = req.params.id;
       if (!name && !contact) {
         return res
           .status(400)
           .json({ message: "Please fill all required fields." });
       } else {
         const parties = await this.partyDao.getPartyList();
-        const existParty = parties.find((item) => item?.contact === contact);
+        const existParty = parties.find(
+          (item) => item?.contact === contact && item?._id.valueOf() !== id
+        );
         if (existParty) {
           return res
             .status(400)
@@ -113,7 +114,7 @@ export default class PartyController {
         req.params.id,
         req.body
       );
-      if (agents) {
+      if (agents?.length) {
         return res.status(400).json({
           message: "You can't delete this party cause of its child exist.",
         });

@@ -16,7 +16,7 @@ export default class PartyDao {
   };
 
   getPartyById = (partyId) => {
-    return this.model.find({ _id: partyId }, {}, { new: true });
+    return this.model.findOne({ _id: partyId }, {}, { new: true });
   };
 
   getPartyList = () => {

@@ -8,7 +8,6 @@ export default class AuthController {
 
   signIn = async (req, res) => {
     try {
-      console.log("controller env :",  process.env.TOKEN_KEY)
       const { email, password } = req.body;
       if (!email && !password) {
         return res
@@ -29,6 +28,7 @@ export default class AuthController {
               { expiresIn: "3h" }
             );
             user.tokens = token;
+            console.log("user :", user)
             return res
               .status(200)
               .json({ message: "Login SuccessFull. : ", user });
