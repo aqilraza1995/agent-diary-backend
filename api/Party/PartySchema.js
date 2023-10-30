@@ -1,13 +1,11 @@
 import mongoose from "mongoose";
-import agentSchema from "../Agent/AgentSchema.js";
 
 const Schema = mongoose.Schema;
 
-
 let parties = new Schema({
-  name: { type: String },
-  contact: { type: String },
-  address: { type: String },
+  name: { type: String, required: true },
+  contact: { type: String, required: true },
+  address: { type: String, required: true },
   status: { type: Boolean, default: false },
 });
 

@@ -8,37 +8,26 @@ export default class AgentDao {
   };
 
   getAllAgent = ({ page, perPage, sortObj }) => {
-    return this.model.aggregate([
-      {
-        $lookup: {
-          from: "parties",
-          localField: "partyId",
-          foreignField: "_id",
-          as: "partyId",
+    return this.model
+      .aggregate([
+        {
+          $lookup: {
+            from: "parties",
+            localField: "partyId",
+            foreignField: "_id",
+            as: "partyId",
+          },
         },
-      },
-      { $unwind: "$partyId" },
-      { $project: { partyId: { name: 1 }, name: 1, contact: 1, status: 1 } },
-    ])  
-    .skip((page - 1) * perPage)
-    .limit(perPage)
-    .sort(sortObj);
+        { $unwind: "$partyId" },
+        { $project: { partyId: { name: 1 }, name: 1, contact: 1, status: 1 } },
+      ])
+      .skip((page - 1) * perPage)
+      .limit(perPage)
+      .sort(sortObj);
   };
 
   getAgentById = (agentId) => {
-    return this.model.aggregate([
-      { $match: { $expr: { $eq: ["$_id", { $toObjectId: agentId }] } } },
-      {
-        $lookup: {
-          from: "parties",
-          localField: "partyId",
-          foreignField: "_id",
-          as: "partyId",
-        },
-      },
-      { $unwind: "$partyId" },
-      { $project: { partyId: { name: 1 }, name: 1, contact: 1, status: 1 } },
-    ]);
+    return this.model.findOne({ _id: agentId });
   };
 
   updateAgent = (agentId, partyData) => {
@@ -55,9 +44,8 @@ export default class AgentDao {
   };
 
   getAgentList = () => {
-    return this.model.find({},{_id:1, name:1})
+    return this.model.find({}, { _id: 1, name: 1, contact: 1 });
   };
-
 
   getAgentByParty = (partyId) => {
     return this.model.aggregate([
@@ -75,5 +63,7 @@ export default class AgentDao {
     ]);
   };
 
-  
+  updateStatus = (agentId, status) => {
+    return this.model.findOneAndUpdate({ _id: agentId }, { status });
+  };
 }

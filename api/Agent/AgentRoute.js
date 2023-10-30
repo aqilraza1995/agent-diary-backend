@@ -11,4 +11,5 @@ export default function agentRoute(router){
     router.route('/agent-by-party/:id').get(auth, agentController.getAgentByParty)
     router.route('/update-agent/:id').put(auth, agentController.updateParty)
     router.route('/delete-agent/:id').delete(auth, agentController.deleteAgent)
+    router.route("/update-agent-status/:id").put(auth, agentController.updateStatus);
 }

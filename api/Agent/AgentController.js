@@ -8,12 +8,12 @@ export default class AgentController {
   insertAgent = async (req, res) => {
     try {
       const { name, contact, partyId } = req.body;
-      if (!name && !contact) {
+      if (!name && !contact && !partyId) {
         return res
           .status(400)
           .json({ message: "Please fill all required fields." });
       } else {
-        const agents = await this.agentDao.getAllAgent();
+        const agents = await this.agentDao.getAgentList();
         const existAgent = agents.find((item) => item?.contact === contact);
         if (existAgent) {
           return res.status(401).json({ message: "Agent is already exist." });
@@ -67,13 +67,17 @@ export default class AgentController {
   updateParty = async (req, res) => {
     try {
       const { name, contact, partyId } = req.body;
+      const id = req.params.id;
       if (!name && !contact) {
         return res
           .status(400)
           .json({ message: "Please fill all required fields." });
       } else {
-        const agents = await this.agentDao.getAllAgent();
-        const existAgent = agents.find((item) => item?.contact === contact);
+        const agents = await this.agentDao.getAgentList();
+        console.log("agents :", agents)
+        const existAgent =  agents.find((item) => item?.contact === contact && item?._id.valueOf() !== id);
+        agents.find((item) => console.log("ITEM :", item));
+        console.log("existAgent :", existAgent)
         if (existAgent) {
           return res
             .status(400)
@@ -117,6 +121,15 @@ export default class AgentController {
       return res.status(200).json(response);
     } catch (err) {
       return res.status(500).json({ message: "Internal server error...", err });
+    }
+  };
+
+  updateStatus = async (req, res) => {
+    try {
+      await this.agentDao.updateStatus(req.params.id, req.body.status);
+      return res.status(200).json({ message: "Status updated." });
+    } catch (err) {
+      return res.status(500).json({ message: "Internal server error..." });
     }
   };
 
