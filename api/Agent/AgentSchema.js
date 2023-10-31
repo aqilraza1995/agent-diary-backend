@@ -20,8 +20,3 @@ let agents = new Schema({
 const agentSchema = mongoose.model("agents", agents);
 export default agentSchema;
 
-
-
-//cascading delete in mongoose
-// hook in mongoose
-// populate n mongoose

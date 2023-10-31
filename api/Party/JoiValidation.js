@@ -1,4 +1,3 @@
-// const Joi = require("joi");
 import Joi from "@hapi/joi"
 
 const partyValidationSchema = Joi.object({
